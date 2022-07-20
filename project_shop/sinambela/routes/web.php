@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Livewire\Product\Index;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,13 +22,20 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::livewire('/admin/product', 'product.index')
-    ->name('admin.product')
-    ->middleware('auth');
+//Route::get('/admin/product', [Index::class, 'render'])->name('admin.product');
 
-Route::livewire('/shop', 'shop.index')
-    ->name('shop.index');
-Route::livewire('/cart', 'shop.cart')
-    ->name('shop.cart');
-Route::livewire('/checkout', 'shop.checkout')
-    ->name('shop.checkout');
+//Route::livewire('/admin/product', 'product.index')
+    //->name('admin.product')
+    //->middleware('auth');
+
+Route::livewire('/admin/product' , 'product.index');
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/admin/product', function () {
+    return view('product.index');
+    })->name('admin.product');
+
+//(livewire v1.x)
+//Route::livewire('/post', 'LandingPage');
+
+//(livewire v2.x)
+//Route::get('/post', \App\Http\Livewire\LandingPage::class);
