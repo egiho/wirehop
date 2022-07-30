@@ -14,10 +14,18 @@ class Index extends Component
 
     public $paginate = 10;
     public $search;
+    public $formVisible;
+    public $formUpdate = false;
 
 
     protected $updatesQueryString = [
         ['search' => ['except' => '']],
+    ];
+
+    protected $listeners = [
+        'formClose' => 'formCloseHandler',
+        'productStored' => 'productStoredHandler',
+        'productUpdated' => 'productUpdatedHandler'
     ];
 
     public function mount()
@@ -34,5 +42,43 @@ class Index extends Component
                 Product::latest()->where('title', 'like', '%' . $this->search . '%')
                     ->paginate($this->paginate)
         ]);
+    }
+
+    public function formCloseHandler()
+    {
+        $this->formVisible = false;
+    }
+
+    public function productStoredHandler()
+    {
+        $this->formVisible = false;
+        session()->flash('message', 'Your Product Was Stored');
+
+    }
+
+    public function editProduct($productId)
+    {
+        $this->formUpdate = true;
+        $this->formVisible = true;
+        $product = Product::find($productId);
+        $this->emit('editProduct', $product);
+    }
+
+    public function productUpdatedHandler()
+    {
+        $this->formVisible = false;
+        session()->flash('message', 'Your Product Was Updated');
+    }
+
+    public function deleteProduct($productId)
+    {
+        $product = Product::find($productId);
+
+        if ($product->image) {
+            storage::disk('public')->delete($product->image);
+        }
+
+        $product->delete();
+        session()->flash('message', 'Product Was Deleted!');
     }
 }

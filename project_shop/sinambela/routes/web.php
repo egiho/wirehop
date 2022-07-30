@@ -22,11 +22,17 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/admin/product', [Index::class, 'render'])->name('admin.product');
+//Route::get('/admin/product', [Index::class, 'render'])->name('admin.product');
 
-//Route::livewire('/admin/product', 'product.index')
-    //->name('admin.product')
-    //->middleware('auth');
+Route::livewire('/admin/product', 'product.index')
+    ->name('admin.product')
+    ->middleware('auth');
+
+Route::livewire('/shop', 'shop.index')
+    ->name('shop.index');
+
+Route::livewire('/cart', 'shop.cart')
+    ->name('shop.cart');
 
 //Route::livewire('/admin/product' , 'product.index');
 
